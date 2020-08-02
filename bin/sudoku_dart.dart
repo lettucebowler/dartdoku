@@ -59,7 +59,7 @@ class Sudoku {
     var space = '';
     for (var i = 0; i < board_size; i++) {
       buffer.write(space);
-      var row = _rowToString(board);
+      var row = _rowToString(board[i]);
       buffer.write(row);
       space = '\n';
     }
@@ -73,7 +73,7 @@ class Sudoku {
     for (var i = 0; i < board_size; i++) {
       row_buffer.write(row_spacer);
       row_buffer.write(board[i]);
-      row_spacer = '\n';
+      row_spacer = ' ';
     }
     return row_buffer.toString();
   }
