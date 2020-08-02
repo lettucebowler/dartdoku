@@ -57,25 +57,48 @@ class Sudoku {
   String _boardToString(List board) {
     var buffer = StringBuffer();
     var space = '';
-    for (var i = 0; i < board_size; i++) {
+    var divider = _makeDivider();
+    for (var i = 0; i < cell_size; i++) {
       buffer.write(space);
-      var row = _rowToString(board[i]);
-      buffer.write(row);
+      buffer.write(divider);
       space = '\n';
+      for (var j = 0; j < cell_size; j++) {
+        buffer.write(space);
+        buffer.write(_rowToString(board[(i * cell_size + j) % board_size]));
+      }
     }
-
+    buffer.write(space + divider);
     return buffer.toString();
   }
 
   String _rowToString(List board) {
-    var row_buffer = StringBuffer();
-    var row_spacer = '';
+    var buffer = StringBuffer();
+    var spacer = '';
     for (var i = 0; i < board_size; i++) {
-      row_buffer.write(row_spacer);
-      row_buffer.write(board[i]);
-      row_spacer = ' ';
+      if (i % cell_size == 0) {
+        spacer = '|';
+      }
+
+      buffer.write(spacer);
+      var to_place = board[i] == 0 ? ' ' : board[i];
+      buffer.write(to_place);
+      spacer = ' ';
     }
-    return row_buffer.toString();
+    buffer.write('|');
+    return buffer.toString();
+  }
+
+  String _makeDivider() {
+    var buffer = StringBuffer();
+    for (var i = 0; i < cell_size + 1; i++) {
+      buffer.write('+');
+      if (i < cell_size) {
+        for (var j = 0; j < cell_size * 2 - 1; j++) {
+          buffer.write('-');
+        }
+      }
+    }
+    return buffer.toString();
   }
 }
 
