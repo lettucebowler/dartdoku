@@ -1,4 +1,3 @@
-import 'package:sudoku_dart/sudoku_dart.dart' as sudoku_dart;
 import 'dart:math';
 
 class Sudoku {
@@ -140,7 +139,6 @@ class Sudoku {
   }
 
   List<int> _getRandomizedOrder(List arr) {
-    print('getRandomizedOrder');
     var r = Random();
     var array = List<int>.from(arr);
     for (var i = 0; i < array.length; i++) {
@@ -154,7 +152,6 @@ class Sudoku {
 
   void _scrambleRows(int iterations) {
     for (var i = 0; i < board_size; i++) {
-      // print(toString());
       var positions = _getPositionsToSwap();
       _swapRows(initial_board, positions[0], positions[1]);
       _swapRows(final_board, positions[0], positions[1]);
@@ -163,7 +160,6 @@ class Sudoku {
 
   void _scrambleCols(int iterations) {
     for (var i = 0; i < board_size; i++) {
-      // print(toString());
       var positions = _getPositionsToSwap();
       _swapCols(initial_board, positions[0], positions[1]);
       _swapCols(final_board, positions[0], positions[1]);

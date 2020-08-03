@@ -175,6 +175,58 @@ class SudokuProblem extends Problem {
     return complete;
   }
 
+  String getStateAsString(SudokuState state) {
+    var board = state.getTiles();
+    return _boardToString(board);
+  }
+
+  String _boardToString(List board) {
+    var buffer = StringBuffer();
+    var space = '';
+    var divider = _makeDivider();
+    for (var i = 0; i < cell_size; i++) {
+      buffer.write(space);
+      buffer.write(divider);
+      space = '\n';
+      for (var j = 0; j < cell_size; j++) {
+        buffer.write(space);
+        buffer.write(_rowToString(board[(i * cell_size + j) % board_size]));
+      }
+    }
+    buffer.write(space + divider);
+    return buffer.toString();
+  }
+
+  String _rowToString(List board) {
+    var buffer = StringBuffer();
+    var spacer = '';
+    for (var i = 0; i < board_size; i++) {
+      if (i % cell_size == 0) {
+        spacer = '|';
+      }
+
+      buffer.write(spacer);
+      var to_place = board[i] == 0 ? ' ' : board[i];
+      buffer.write(to_place);
+      spacer = ' ';
+    }
+    buffer.write('|');
+    return buffer.toString();
+  }
+
+  String _makeDivider() {
+    var buffer = StringBuffer();
+    for (var i = 0; i < cell_size + 1; i++) {
+      buffer.write('+');
+      if (i < cell_size) {
+        for (var j = 0; j < cell_size * 2 - 1; j++) {
+          buffer.write('-');
+        }
+      }
+    }
+    return buffer.toString();
+  }
+
   @override
   bool success() {
     return getCurrentState().equals(getFinalState());

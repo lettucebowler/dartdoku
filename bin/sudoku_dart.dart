@@ -1,8 +1,10 @@
-import 'package:sudoku_dart/sudoku_dart.dart' as sudoku_dart;
 import 'dart:core';
-import 'domains/sudoku/Sudoku.dart';
+import 'domains/sudoku/SudokuProblem.dart';
+import 'domains/sudoku/SudokuState.dart';
 
 void main(List<String> arguments) {
-  var sudoku = Sudoku.withMoreHints(0);
-  print(sudoku.toString());
+  // var sudoku = Sudoku.withMoreHints(0);
+  var problem = SudokuProblem();
+  SudokuState initial_state = problem.getInitialState();
+  print(problem.getStateAsString(initial_state));
 }
