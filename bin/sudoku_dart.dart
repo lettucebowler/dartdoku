@@ -19,6 +19,7 @@ class Sudoku {
         List.generate(board_size, (i) => List(board_size), growable: false);
     _generateFilled();
     _scrambleBoard();
+    _preparePuzzle();
   }
 
   void _generateFilled() {
@@ -68,7 +69,114 @@ class Sudoku {
     }
   }
 
+  void _preparePuzzle() {
+    print('preparePuzzle');
+    initial_board = List.from(final_board);
+    var num_removed = 0;
+    var max_remove;
+
+    // Set max number of empty cells on a board
+    if (cell_size == 2) {
+      max_remove = 12 - hint_offset;
+    } else if (cell_size == 3) {
+      max_remove = 51 - hint_offset;
+    } else if (cell_size == 4) {
+      max_remove = 150 - hint_offset;
+    } else {
+      max_remove = 0;
+    }
+
+    //create a list of valid positions, removed cell must be in list
+    var valid_positions = [];
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        valid_positions.add([i, j]);
+      }
+    }
+
+    var rand_pos;
+    var temp;
+    var row;
+    var col;
+    var solution_count;
+    do {
+      rand_pos = _getRandom(valid_positions.length);
+      var tmp_pos = valid_positions[rand_pos];
+      row = tmp_pos[0];
+      col = tmp_pos[1];
+      temp = initial_board[row][col];
+      initial_board[row][col] = 0;
+      valid_positions.remove(rand_pos);
+      print(_boardToString(initial_board));
+      solution_count = _countSolutions(0, 0, initial_board, 0);
+      if (solution_count > 1) {
+        print('more than 1');
+        initial_board[row][col] = temp;
+      } else {
+        num_removed++;
+      }
+      print(_boardToString(initial_board));
+    } while (num_removed < max_remove && valid_positions.isNotEmpty);
+  }
+
+  int _countSolutions(int i, int j, List board, int count) {
+    print('countSolutions');
+    if (i == board_size) {
+      i = 0;
+      if (++j == board_size) {
+        return 1 + count;
+      }
+    }
+    if (board[i][j] != 0) {
+      // Skip filled cells
+      return _countSolutions(i + 1, j, board, count);
+    }
+    for (var val = 1; val <= board_size && count < 2; ++val) {
+      if (_checkSafety(board, i, j, val)) {
+        board[i][j] = val;
+        count = _countSolutions(i + 1, j, board, count);
+      }
+    }
+    board[i][j] = 0;
+    return count;
+  }
+
+  bool _checkSafety(List board, int row, int col, int val) {
+    print('checkSafety');
+    // Check row
+    for (var d = 0; d < board.length; d++) {
+      if (board[row][d] == num) {
+        print('false');
+        return false;
+      }
+    }
+    // Check column
+    for (var ints in board) {
+      if (ints[col] == num) {
+        print('false');
+        return false;
+      }
+    }
+    // Check block
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board.length; j++) {
+        var same_row_block = i ~/ cell_size == row ~/ cell_size;
+        var same_col_block = j ~/ cell_size == col ~/ cell_size;
+        if (same_row_block && same_col_block) {
+          if (board[i][j] == num) {
+            print('false');
+            return false;
+          }
+        }
+      }
+    }
+    // Passed all tests
+    print('true');
+    return true;
+  }
+
   List<int> _getRandomizedOrder(List arr) {
+    print('getRandomizedOrder');
     var r = Random();
     var array = List<int>.from(arr);
     for (var i = 0; i < array.length; i++) {
@@ -85,7 +193,7 @@ class Sudoku {
     for (var i = 0; i < board_size; i++) {
       // print(toString());
       var positions = _getPositionsToSwap();
-      swapRows(positions[0], positions[1]);
+      _swapRows(positions[0], positions[1]);
     }
   }
 
@@ -93,11 +201,11 @@ class Sudoku {
     for (var i = 0; i < board_size; i++) {
       // print(toString());
       var positions = _getPositionsToSwap();
-      swapCols(positions[0], positions[1]);
+      _swapCols(positions[0], positions[1]);
     }
   }
 
-  void swapRows(int pos1, int pos2) {
+  void _swapRows(int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
       var temp = final_board[pos1][i];
       final_board[pos1][i] = final_board[pos2][i];
@@ -105,7 +213,7 @@ class Sudoku {
     }
   }
 
-  void swapCols(int pos1, int pos2) {
+  void _swapCols(int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
       var temp = final_board[i][pos1];
       final_board[i][pos1] = final_board[i][pos2];
@@ -127,8 +235,6 @@ class Sudoku {
     var random = Random();
     return random.nextInt(max);
   }
-
-  void _preparePuzzle() {}
 
   @override
   String toString() {
