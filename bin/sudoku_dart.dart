@@ -71,7 +71,12 @@ class Sudoku {
 
   void _preparePuzzle() {
     print('preparePuzzle');
-    initial_board = List.from(final_board);
+    // initial_board = List(9)
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        initial_board[i][j] = final_board[i][j];
+      }
+    }
     var num_removed = 0;
     var max_remove;
 
@@ -107,38 +112,52 @@ class Sudoku {
       temp = initial_board[row][col];
       initial_board[row][col] = 0;
       valid_positions.remove(rand_pos);
-      print(_boardToString(initial_board));
-      solution_count = _countSolutions(0, 0, initial_board, 0);
-      if (solution_count > 1) {
-        print('solutions: ' + solution_count.toString());
+      // print(_boardToString(initial_board));
+      // solution_count = _countSolutions(0, 0, initial_board, 0);
+      // if (solution_count > 1) {
+      if (!_solve(0, 0, initial_board)) {
+        // print('solutions: ' + solution_count.toString());
         initial_board[row][col] = temp;
       } else {
         num_removed++;
       }
-      print('num_removed: ' + num_removed.toString());
-      print(_boardToString(initial_board));
+      // print('num_removed: ' + num_removed.toString());
+      // print(_boardToString(initial_board));
     } while (num_removed < max_remove && valid_positions.isNotEmpty);
   }
 
   int _countSolutions(int i, int j, List board, int count) {
-    var count_num = count;
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        if (board[i][j] != 0) {
+          for (var num = 1; num <= board_size; num++) {
+            if (_checkSafety(board, i, j, num)) {}
+          }
+        }
+      }
+    }
+  }
+
+  bool _solve(int i, int j, List board) {
     if (i == board_size) {
       i = 0;
       if (++j == board_size) {
-        return 1 + count;
+        return true;
       }
     }
-    if (initial_board[i][j] != 0) {
-      return _countSolutions(i + 1, j, board, count);
+    if (board[i][j] != 0) {
+      return _solve(i + 1, j, board);
     }
-    for (var val = 1; val <= board_size && count < 1; val++) {
+    for (var val = 1; val <= board_size; ++val) {
       if (_checkSafety(board, i, j, val)) {
         board[i][j] = val;
-        count_num = _countSolutions(i + 1, j, board, count_num);
+        if (_solve(i + 1, j, board)) {
+          return true;
+        }
+        board[i][j] == 0;
       }
     }
-    board[i][j] = 0;
-    return count_num;
+    return false;
   }
 
   bool _checkSafety(List board, int row, int col, int val) {
@@ -238,7 +257,11 @@ class Sudoku {
 
   @override
   String toString() {
-    return _boardToString(final_board);
+    StringBuffer buffer = StringBuffer();
+    buffer.write(_boardToString(final_board));
+    buffer.write('\n');
+    buffer.write(_boardToString(initial_board));
+    return buffer.toString();
   }
 
   String _boardToString(List board) {
