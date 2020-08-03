@@ -103,58 +103,84 @@ class Sudoku {
     var temp;
     var row;
     var col;
-    var solution_count;
+    var current_board =
+        List.generate(board_size, (i) => List(board_size), growable: false);
     do {
+      for (var i = 0; i < board_size; i++) {
+        for (var j = 0; j < board_size; j++) {
+          current_board[i][j] = initial_board[i][j];
+        }
+      }
       rand_pos = _getRandom(valid_positions.length);
       var tmp_pos = valid_positions[rand_pos];
       row = tmp_pos[0];
       col = tmp_pos[1];
-      temp = initial_board[row][col];
-      initial_board[row][col] = 0;
-      valid_positions.remove(rand_pos);
-      // print(_boardToString(initial_board));
-      // solution_count = _countSolutions(0, 0, initial_board, 0);
-      // if (solution_count > 1) {
-      if (!_solve(0, 0, initial_board)) {
-        // print('solutions: ' + solution_count.toString());
-        initial_board[row][col] = temp;
+      temp = current_board[row][col];
+      current_board[row][col] = 0;
+      var solution_count = _countSolutions(0, 0, current_board, 0);
+
+      if (solution_count > 1) {
+        print('solution_count: ' + solution_count.toString());
+        current_board[row][col] = temp;
       } else {
         num_removed++;
+        valid_positions.remove(rand_pos);
       }
-      // print('num_removed: ' + num_removed.toString());
-      // print(_boardToString(initial_board));
-    } while (num_removed < max_remove && valid_positions.isNotEmpty);
+    } while (num_removed < max_remove);
+
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        initial_board[i][j] = current_board[i][j];
+      }
+    }
+    print(num_removed.toString());
   }
 
   int _countSolutions(int i, int j, List board, int count) {
-    for (var i = 0; i < board_size; i++) {
-      for (var j = 0; j < board_size; j++) {
-        if (board[i][j] != 0) {
-          for (var num = 1; num <= board_size; num++) {
-            if (_checkSafety(board, i, j, num)) {}
-          }
-        }
+    if (i == board.length) {
+      i = 0;
+      if (++j == board.length) {
+        return count;
       }
     }
+    if (board[i][j] != 0) {
+      // Skip filled cells
+      return _countSolutions(i + 1, j, board, count);
+    }
+    for (int val = 1; val <= board.length && count < 2; ++val) {
+      if (_checkSafety(board, i, j, val)) {
+        board[i][j] = val;
+        count = _countSolutions(i + 1, j, board, count);
+      }
+    }
+    board[i][j] = 0;
+    return count;
   }
 
   bool _solve(int i, int j, List board) {
+    var current_board =
+        List.generate(board_size, (i) => List(board_size), growable: false);
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        current_board[i][j] = board[i][j];
+      }
+    }
     if (i == board_size) {
       i = 0;
       if (++j == board_size) {
         return true;
       }
     }
-    if (board[i][j] != 0) {
-      return _solve(i + 1, j, board);
+    if (current_board[i][j] != 0) {
+      return _solve(i + 1, j, current_board);
     }
     for (var val = 1; val <= board_size; ++val) {
-      if (_checkSafety(board, i, j, val)) {
-        board[i][j] = val;
-        if (_solve(i + 1, j, board)) {
+      if (_checkSafety(current_board, i, j, val)) {
+        current_board[i][j] = val;
+        if (_solve(i + 1, j, current_board)) {
           return true;
         }
-        board[i][j] == 0;
+        current_board[i][j] == 0;
       }
     }
     return false;
@@ -257,7 +283,7 @@ class Sudoku {
 
   @override
   String toString() {
-    StringBuffer buffer = StringBuffer();
+    var buffer = StringBuffer();
     buffer.write(_boardToString(final_board));
     buffer.write('\n');
     buffer.write(_boardToString(initial_board));
