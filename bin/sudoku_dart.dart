@@ -111,25 +111,12 @@ class Sudoku {
   }
 
   void _rotateBoard(int N, List board) {
-    // Consider all squares one by one
     for (var x = 0; x < N / 2; x++) {
-      // Consider elements in group
-      // of 4 in current square
       for (var y = x; y < N - x - 1; y++) {
-        // Store current cell in
-        // temp variable
-        int temp = board[x][y];
-
-        // Move values from right to top
+        var temp = board[x][y];
         board[x][y] = board[y][N - 1 - x];
-
-        // Move values from bottom to right
         board[y][N - 1 - x] = board[N - 1 - x][N - 1 - y];
-
-        // Move values from left to bottom
         board[N - 1 - x][N - 1 - y] = board[N - 1 - y][x];
-
-        // Assign temp to left
         board[N - 1 - y][x] = temp;
       }
     }
