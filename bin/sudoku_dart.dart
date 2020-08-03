@@ -10,49 +10,64 @@ class Sudoku {
   List final_board;
 
   Sudoku() {
+    _initialize();
+    _scrambleBoards();
+    _addClues(hint_offset);
+  }
+
+  Sudoku.withMoreHints(int hint_offset) {
+    _initialize();
+    this.hint_offset = hint_offset;
+    _scrambleBoards();
+    _addClues(hint_offset);
+  }
+
+  void _initialize() {
     cell_size = 3;
     board_size = cell_size * cell_size;
     hint_offset = 0;
-    initial_board =
-        List.generate(board_size, (i) => List(board_size), growable: false);
-    final_board =
-        List.generate(board_size, (i) => List(board_size), growable: false);
-    _generateFilled();
-    _scrambleBoard();
-    _preparePuzzle();
+    initial_board = [
+      [0, 0, 0, 8, 0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 4, 3],
+      [5, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 7, 0, 8, 0, 0],
+      [0, 0, 0, 0, 0, 0, 1, 0, 0],
+      [0, 2, 0, 0, 3, 0, 0, 0, 0],
+      [6, 0, 0, 0, 0, 0, 0, 7, 5],
+      [0, 0, 3, 4, 0, 0, 0, 0, 0],
+      [0, 0, 0, 2, 0, 0, 6, 0, 0]
+    ];
+
+    final_board = [
+      [2, 3, 7, 8, 4, 1, 5, 6, 9],
+      [1, 8, 6, 7, 9, 5, 2, 4, 3],
+      [5, 9, 4, 3, 2, 6, 7, 1, 8],
+      [3, 1, 5, 6, 7, 4, 8, 9, 2],
+      [4, 6, 9, 5, 8, 2, 1, 3, 7],
+      [7, 2, 8, 1, 3, 9, 4, 5, 6],
+      [6, 4, 2, 9, 1, 8, 3, 7, 5],
+      [8, 5, 3, 4, 6, 7, 9, 2, 1],
+      [9, 7, 1, 2, 5, 3, 6, 8, 4]
+    ];
   }
 
-  void _generateFilled() {
-    int k;
-    var n = 1;
-
-    for (var i = 0; i < board_size; i++) {
-      k = n;
-      for (var j = 0; j < board_size; j++) {
-        if (k > board_size) {
-          k = 1;
-        }
-
-        final_board[i][j] = k;
-        k++;
-      }
-
-      n = k + cell_size;
-      if (k == board_size + 1) {
-        n = 1 + cell_size;
-      }
-
-      if (n > board_size) {
-        n = (n % board_size) + 1;
-      }
-    }
-  }
-
-  void _scrambleBoard() {
+  void _scrambleBoards() {
     var max_iterations = 15;
     _scrambleRows(max_iterations);
     _scrambleCols(max_iterations);
     _randomizeDigits();
+  }
+
+  void _addClues(int hint_offset) {
+    var pos1;
+    var pos2;
+    for (var i = 0; i < hint_offset; i++) {
+      do {
+        pos1 = _getRandom(board_size);
+        pos2 = _getRandom(board_size);
+      } while (initial_board[pos1][pos2] != 0);
+      initial_board[pos1][pos2] = final_board[pos1][pos2];
+    }
   }
 
   void _randomizeDigits() {
@@ -65,126 +80,15 @@ class Sudoku {
       for (var j = 0; j < board_size; j++) {
         var temp = final_board[i][j];
         final_board[i][j] = digits[temp - 1];
-      }
-    }
-  }
-
-  void _preparePuzzle() {
-    print('preparePuzzle');
-    // initial_board = List(9)
-    for (var i = 0; i < board_size; i++) {
-      for (var j = 0; j < board_size; j++) {
-        initial_board[i][j] = final_board[i][j];
-      }
-    }
-    var num_removed = 0;
-    var max_remove;
-
-    // Set max number of empty cells on a board
-    if (cell_size == 2) {
-      max_remove = 12 - hint_offset;
-    } else if (cell_size == 3) {
-      max_remove = 51 - hint_offset;
-    } else if (cell_size == 4) {
-      max_remove = 150 - hint_offset;
-    } else {
-      max_remove = 0;
-    }
-
-    //create a list of valid positions, removed cell must be in list
-    var valid_positions = [];
-    for (var i = 0; i < board_size; i++) {
-      for (var j = 0; j < board_size; j++) {
-        valid_positions.add([i, j]);
-      }
-    }
-
-    var rand_pos;
-    var temp;
-    var row;
-    var col;
-    var current_board =
-        List.generate(board_size, (i) => List(board_size), growable: false);
-    do {
-      for (var i = 0; i < board_size; i++) {
-        for (var j = 0; j < board_size; j++) {
-          current_board[i][j] = initial_board[i][j];
+        temp = initial_board[i][j];
+        if (temp != 0) {
+          initial_board[i][j] = digits[temp - 1];
         }
       }
-      rand_pos = _getRandom(valid_positions.length);
-      var tmp_pos = valid_positions[rand_pos];
-      row = tmp_pos[0];
-      col = tmp_pos[1];
-      temp = current_board[row][col];
-      current_board[row][col] = 0;
-      var solution_count = _countSolutions(0, 0, current_board, 0);
-
-      if (solution_count > 1) {
-        print('solution_count: ' + solution_count.toString());
-        current_board[row][col] = temp;
-      } else {
-        num_removed++;
-        valid_positions.remove(rand_pos);
-      }
-    } while (num_removed < max_remove);
-
-    for (var i = 0; i < board_size; i++) {
-      for (var j = 0; j < board_size; j++) {
-        initial_board[i][j] = current_board[i][j];
-      }
     }
-    print(num_removed.toString());
   }
 
-  int _countSolutions(int i, int j, List board, int count) {
-    if (i == board.length) {
-      i = 0;
-      if (++j == board.length) {
-        return count;
-      }
-    }
-    if (board[i][j] != 0) {
-      // Skip filled cells
-      return _countSolutions(i + 1, j, board, count);
-    }
-    for (int val = 1; val <= board.length && count < 2; ++val) {
-      if (_checkSafety(board, i, j, val)) {
-        board[i][j] = val;
-        count = _countSolutions(i + 1, j, board, count);
-      }
-    }
-    board[i][j] = 0;
-    return count;
-  }
-
-  bool _solve(int i, int j, List board) {
-    var current_board =
-        List.generate(board_size, (i) => List(board_size), growable: false);
-    for (var i = 0; i < board_size; i++) {
-      for (var j = 0; j < board_size; j++) {
-        current_board[i][j] = board[i][j];
-      }
-    }
-    if (i == board_size) {
-      i = 0;
-      if (++j == board_size) {
-        return true;
-      }
-    }
-    if (current_board[i][j] != 0) {
-      return _solve(i + 1, j, current_board);
-    }
-    for (var val = 1; val <= board_size; ++val) {
-      if (_checkSafety(current_board, i, j, val)) {
-        current_board[i][j] = val;
-        if (_solve(i + 1, j, current_board)) {
-          return true;
-        }
-        current_board[i][j] == 0;
-      }
-    }
-    return false;
-  }
+  void _preparePuzzle() {}
 
   bool _checkSafety(List board, int row, int col, int val) {
     print('checkSafety');
@@ -238,7 +142,8 @@ class Sudoku {
     for (var i = 0; i < board_size; i++) {
       // print(toString());
       var positions = _getPositionsToSwap();
-      _swapRows(positions[0], positions[1]);
+      _swapRows(initial_board, positions[0], positions[1]);
+      _swapRows(final_board, positions[0], positions[1]);
     }
   }
 
@@ -246,23 +151,24 @@ class Sudoku {
     for (var i = 0; i < board_size; i++) {
       // print(toString());
       var positions = _getPositionsToSwap();
-      _swapCols(positions[0], positions[1]);
+      _swapCols(initial_board, positions[0], positions[1]);
+      _swapCols(final_board, positions[0], positions[1]);
     }
   }
 
-  void _swapRows(int pos1, int pos2) {
+  void _swapRows(List board, int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
-      var temp = final_board[pos1][i];
-      final_board[pos1][i] = final_board[pos2][i];
-      final_board[pos2][i] = temp;
+      var temp = board[pos1][i];
+      board[pos1][i] = board[pos2][i];
+      board[pos2][i] = temp;
     }
   }
 
-  void _swapCols(int pos1, int pos2) {
+  void _swapCols(List board, int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
-      var temp = final_board[i][pos1];
-      final_board[i][pos1] = final_board[i][pos2];
-      final_board[i][pos2] = temp;
+      var temp = board[i][pos1];
+      board[i][pos1] = board[i][pos2];
+      board[i][pos2] = temp;
     }
   }
 
