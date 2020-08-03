@@ -77,8 +77,9 @@ class SudokuState implements State {
     var columns = source[0].length;
     var dest = List(rows);
     for (var r = 0; r < rows; r++) {
+      dest[r] = List(columns);
       for (var c = 0; c < columns; c++) {
-        dest[r].add(source[r][c]);
+        dest[r][c] = source[r][c];
       }
     }
     return dest;
