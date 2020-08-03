@@ -1,5 +1,4 @@
 import 'package:sudoku_dart/sudoku_dart.dart' as sudoku_dart;
-import 'dart:convert';
 import 'dart:math';
 
 class Sudoku {
@@ -150,7 +149,6 @@ class Sudoku {
       array[i] = array[random_pos];
       array[random_pos] = temp;
     }
-    print(array);
     return array;
   }
 
