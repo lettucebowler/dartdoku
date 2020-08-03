@@ -1,5 +1,6 @@
 import 'package:sudoku_dart/sudoku_dart.dart' as sudoku_dart;
 import 'dart:convert';
+import 'dart:math';
 
 class Sudoku {
   int board_size;
@@ -16,10 +17,10 @@ class Sudoku {
         List.generate(board_size, (i) => List(board_size), growable: false);
     final_board =
         List.generate(board_size, (i) => List(board_size), growable: false);
-    generateFilled();
+    _generateFilled();
   }
 
-  void generateFilled() {
+  void _generateFilled() {
     int k;
     var n = 1;
 
@@ -45,9 +46,85 @@ class Sudoku {
     }
   }
 
-  void scrambleBoard() {}
+  void _scrambleBoard() {
+    var max_iterations = 15;
+    _scrambleRows(max_iterations);
+    _scrambleCols(max_iterations);
+    _randomizeDigits();
+  }
 
-  void preparePuzzle() {}
+  void _randomizeDigits() {
+    var digits = List();
+    for (var i = 0; i < board_size; i++) {
+      digits[i] = i + 1;
+    }
+    digits = _getRandomizedOrder(digits);
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        var temp = final_board[i][j];
+        final_board[i][j] = digits[temp - 1];
+      }
+    }
+  }
+
+  List<int> _getRandomizedOrder(List arr) {
+    var r = Random();
+    var array = List.from(arr);
+    for (var i = 0; i < array.length; i++) {
+      var random_pos = r.nextInt(array.length);
+      int temp = array[i];
+      array[i] = array[random_pos];
+      array[random_pos] = temp;
+    }
+    return array;
+  }
+
+  void _scrambleRows(int iterations) {
+    for (var i = 0; i < board_size; i++) {
+      var positions = _getPositionsToSwap();
+      swapRows(positions[0], positions[1]);
+    }
+  }
+
+  void _scrambleCols(int iterations) {
+    for (var i = 0; i < board_size; i++) {
+      var positions = _getPositionsToSwap();
+      swapCols(positions[0], positions[1]);
+    }
+  }
+
+  void swapRows(int pos1, int pos2) {
+    for (var i = 0; i < board_size; i++) {
+      var temp = final_board[pos1][i];
+      final_board[pos2][i] = final_board[pos1][i];
+      final_board[pos1][i] = temp;
+    }
+  }
+
+  void swapCols(int pos1, int pos2) {
+    for (var i = 0; i < board_size; i++) {
+      var temp = final_board[i][pos1];
+      final_board[i][pos2] = final_board[i][pos1];
+      final_board[i][pos1] = temp;
+    }
+  }
+
+  List<int> _getPositionsToSwap() {
+    var pos1 = _getRandom(board_size);
+    int pos2;
+    do {
+      pos2 = _getRandom(cell_size);
+      pos2 = (pos1 ~/ cell_size) * cell_size + pos2;
+    } while (pos1 ~/ cell_size != pos2 ~/ cell_size);
+    return [pos1, pos2];
+  }
+
+  int _getRandom(int max) {
+    var random = Random();
+    return random.nextInt(max);
+  }
+
+  void _preparePuzzle() {}
 
   @override
   String toString() {
