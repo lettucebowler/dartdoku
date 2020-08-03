@@ -110,35 +110,38 @@ class Sudoku {
       print(_boardToString(initial_board));
       solution_count = _countSolutions(0, 0, initial_board, 0);
       if (solution_count > 1) {
-        print('more than 1');
+        print('solutions: ' + solution_count.toString());
         initial_board[row][col] = temp;
       } else {
         num_removed++;
       }
+      print('num_removed: ' + num_removed.toString());
       print(_boardToString(initial_board));
     } while (num_removed < max_remove && valid_positions.isNotEmpty);
   }
 
   int _countSolutions(int i, int j, List board, int count) {
     print('countSolutions');
+    var count_num = count;
     if (i == board_size) {
       i = 0;
       if (++j == board_size) {
-        return 1 + count;
+        // count_num++;
+        return count_num;
       }
     }
     if (board[i][j] != 0) {
       // Skip filled cells
-      return _countSolutions(i + 1, j, board, count);
+      return _countSolutions(i + 1, j, board, count_num);
     }
-    for (var val = 1; val <= board_size && count < 2; ++val) {
+    for (var val = 1; val <= board_size && count_num < 2; ++val) {
       if (_checkSafety(board, i, j, val)) {
         board[i][j] = val;
-        count = _countSolutions(i + 1, j, board, count);
+        count_num = _countSolutions(i + 1, j, board, count_num);
       }
     }
     board[i][j] = 0;
-    return count;
+    return count_num;
   }
 
   bool _checkSafety(List board, int row, int col, int val) {
