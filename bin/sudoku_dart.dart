@@ -121,20 +121,17 @@ class Sudoku {
   }
 
   int _countSolutions(int i, int j, List board, int count) {
-    print('countSolutions');
     var count_num = count;
     if (i == board_size) {
       i = 0;
       if (++j == board_size) {
-        // count_num++;
-        return count_num;
+        return 1 + count;
       }
     }
-    if (board[i][j] != 0) {
-      // Skip filled cells
-      return _countSolutions(i + 1, j, board, count_num);
+    if (initial_board[i][j] != 0) {
+      return _countSolutions(i + 1, j, board, count);
     }
-    for (var val = 1; val <= board_size && count_num < 2; ++val) {
+    for (var val = 1; val <= board_size && count < 1; val++) {
       if (_checkSafety(board, i, j, val)) {
         board[i][j] = val;
         count_num = _countSolutions(i + 1, j, board, count_num);
