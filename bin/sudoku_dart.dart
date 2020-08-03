@@ -18,6 +18,7 @@ class Sudoku {
     final_board =
         List.generate(board_size, (i) => List(board_size), growable: false);
     _generateFilled();
+    _scrambleBoard();
   }
 
   void _generateFilled() {
@@ -54,7 +55,7 @@ class Sudoku {
   }
 
   void _randomizeDigits() {
-    var digits = List();
+    var digits = List(board_size);
     for (var i = 0; i < board_size; i++) {
       digits[i] = i + 1;
     }
@@ -69,18 +70,20 @@ class Sudoku {
 
   List<int> _getRandomizedOrder(List arr) {
     var r = Random();
-    var array = List.from(arr);
+    var array = List<int>.from(arr);
     for (var i = 0; i < array.length; i++) {
-      var random_pos = r.nextInt(array.length);
-      int temp = array[i];
+      var random_pos = r.nextInt(board_size);
+      var temp = array[i];
       array[i] = array[random_pos];
       array[random_pos] = temp;
     }
+    print(array);
     return array;
   }
 
   void _scrambleRows(int iterations) {
     for (var i = 0; i < board_size; i++) {
+      // print(toString());
       var positions = _getPositionsToSwap();
       swapRows(positions[0], positions[1]);
     }
@@ -88,6 +91,7 @@ class Sudoku {
 
   void _scrambleCols(int iterations) {
     for (var i = 0; i < board_size; i++) {
+      // print(toString());
       var positions = _getPositionsToSwap();
       swapCols(positions[0], positions[1]);
     }
@@ -96,16 +100,16 @@ class Sudoku {
   void swapRows(int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
       var temp = final_board[pos1][i];
-      final_board[pos2][i] = final_board[pos1][i];
-      final_board[pos1][i] = temp;
+      final_board[pos1][i] = final_board[pos2][i];
+      final_board[pos2][i] = temp;
     }
   }
 
   void swapCols(int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
       var temp = final_board[i][pos1];
-      final_board[i][pos2] = final_board[i][pos1];
-      final_board[i][pos1] = temp;
+      final_board[i][pos1] = final_board[i][pos2];
+      final_board[i][pos2] = temp;
     }
   }
 
