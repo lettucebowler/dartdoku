@@ -68,8 +68,15 @@ class SudokuState implements State {
     if (this == other) {
       return true;
     }
-    Function eq = const ListEquality().equals;
-    return eq(tiles, other.tiles);
+    var equal = true;
+    for (var i = 0; i < tiles.length; i++) {
+      for (var j = 0; j < tiles.length; j++) {
+        if (tiles[i][j] != other.getTiles()[i][j]) {
+          equal = false;
+        }
+      }
+    }
+    return equal;
   }
 
   static List _copyTiles(List source) {

@@ -42,6 +42,9 @@ void main(List<String> arguments) {
   SudokuState current_state = problem.getCurrentState();
   print(problem.getStateAsString(current_state));
   solveGame();
-  current_state = problem.getCurrentState();
-  print(problem.getStateAsString(current_state));
+
+  if (problem.success()) {
+    print('Solved!');
+    print(problem.getStateAsString(problem.getCurrentState()));
+  }
 }
