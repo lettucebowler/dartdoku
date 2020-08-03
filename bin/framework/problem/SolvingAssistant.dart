@@ -16,7 +16,7 @@ class SolvingAssistant {
   * @param problem the problem being solved
   */
   SolvingAssistant(Problem problem) {
-    problem = problem;
+    this.problem = problem;
     mover = problem.getMover();
     problemSolved = false;
     moveCount = 0;
