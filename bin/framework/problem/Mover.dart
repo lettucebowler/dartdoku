@@ -53,7 +53,7 @@ abstract class Mover {
     var function = moveMap[moveName];
     if (function == null) {
 //            throw new RuntimeException("Bad move name: " + moveName);
-      print("Bad move name: " + moveName);
+      print('Bad move name: ' + moveName);
     }
     return function(state);
   }
