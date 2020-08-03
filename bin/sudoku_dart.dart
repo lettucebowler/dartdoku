@@ -56,17 +56,82 @@ class Sudoku {
     _scrambleRows(max_iterations);
     _scrambleCols(max_iterations);
     _randomizeDigits();
+    _transposeBoards();
+    _rotateBoards();
   }
 
   void _addClues(int hint_offset) {
     var pos1;
     var pos2;
-    for (var i = 0; i < hint_offset; i++) {
+    var i;
+    for (i = 0; i < hint_offset; i++) {
       do {
         pos1 = _getRandom(board_size);
         pos2 = _getRandom(board_size);
       } while (initial_board[pos1][pos2] != 0);
       initial_board[pos1][pos2] = final_board[pos1][pos2];
+      if (initial_board[pos2][pos1] == 0) {
+        initial_board[pos2][pos1] = final_board[pos2][pos1];
+        i++;
+      }
+    }
+  }
+
+  void _transposeBoards() {
+    var r = _getRandom(2);
+    if (r % 2 == 0) {
+      _transposeBoard(initial_board);
+      _transposeBoard(final_board);
+    }
+  }
+
+  void _transposeBoard(List board) {
+    var temp = List(board_size);
+    for (var i = 0; i < board_size; i++) {
+      temp[i] = List(board_size);
+    }
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        temp[i][j] = board[j][i];
+      }
+    }
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        board[i][j] = temp[i][j];
+      }
+    }
+  }
+
+  void _rotateBoards() {
+    var rotations = _getRandom(4);
+    for (var i = 0; i < rotations; i++) {
+      _rotateBoard(board_size, initial_board);
+      _rotateBoard(board_size, final_board);
+    }
+  }
+
+  void _rotateBoard(int N, List board) {
+    // Consider all squares one by one
+    for (var x = 0; x < N / 2; x++) {
+      // Consider elements in group
+      // of 4 in current square
+      for (var y = x; y < N - x - 1; y++) {
+        // Store current cell in
+        // temp variable
+        int temp = board[x][y];
+
+        // Move values from right to top
+        board[x][y] = board[y][N - 1 - x];
+
+        // Move values from bottom to right
+        board[y][N - 1 - x] = board[N - 1 - x][N - 1 - y];
+
+        // Move values from left to bottom
+        board[N - 1 - x][N - 1 - y] = board[N - 1 - y][x];
+
+        // Assign temp to left
+        board[N - 1 - y][x] = temp;
+      }
     }
   }
 
@@ -86,42 +151,6 @@ class Sudoku {
         }
       }
     }
-  }
-
-  void _preparePuzzle() {}
-
-  bool _checkSafety(List board, int row, int col, int val) {
-    print('checkSafety');
-    // Check row
-    for (var d = 0; d < board.length; d++) {
-      if (board[row][d] == num) {
-        print('false');
-        return false;
-      }
-    }
-    // Check column
-    for (var ints in board) {
-      if (ints[col] == num) {
-        print('false');
-        return false;
-      }
-    }
-    // Check block
-    for (var i = 0; i < board_size; i++) {
-      for (var j = 0; j < board.length; j++) {
-        var same_row_block = i ~/ cell_size == row ~/ cell_size;
-        var same_col_block = j ~/ cell_size == col ~/ cell_size;
-        if (same_row_block && same_col_block) {
-          if (board[i][j] == num) {
-            print('false');
-            return false;
-          }
-        }
-      }
-    }
-    // Passed all tests
-    print('true');
-    return true;
   }
 
   List<int> _getRandomizedOrder(List arr) {
@@ -245,6 +274,6 @@ class Sudoku {
 }
 
 void main(List<String> arguments) {
-  var sudoku = Sudoku();
+  var sudoku = Sudoku.withMoreHints(0);
   print(sudoku.toString());
 }
