@@ -24,9 +24,11 @@ void solveGame() {
   for (var i = 0; i < board_size; i++) {
     for (var j = 0; j < board_size; j++) {
       for (var k = 1; k <= board_size; k++) {
-        doMove(k, i, j);
-        if (problem.isCorrect(i, j)) {
-          break;
+        if (!problem.isCorrect(i, j)) {
+          doMove(k, i, j);
+          if (problem.isCorrect(i, j)) {
+            break;
+          }
         }
       }
     }
