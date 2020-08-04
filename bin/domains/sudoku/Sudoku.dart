@@ -50,14 +50,14 @@ class Sudoku {
   }
 
   void _scrambleBoards() {
-    var max_iterations = 15;
-    _scrambleRows();
-    _scrambleCols();
+    // var max_iterations = 15;
+    // _scrambleRows();
+    // _scrambleCols();
     _scrambleFloors();
-    _scrambleTowers();
-    _randomizeDigits();
-    _transposeBoards();
-    _rotateBoards();
+    // _scrambleTowers();
+    // _randomizeDigits();
+    // _transposeBoards();
+    // _rotateBoards();
   }
 
   void _addClues(int hint_offset) {
@@ -159,10 +159,10 @@ class Sudoku {
     }
     for (var i = 0; i < cell_size; i++) {
       var new_order = _getRandomizedOrder(indices);
-      for (var j = 0; j < cell_size - 1; j++) {
-        _swapRows(initial_board, j, new_order[j]);
-        _swapRows(final_board, j, new_order[j]);
-      }
+      // for (var j = 0; j < cell_size - 1; j++) {
+      //   _swapRows(initial_board, j, new_order[j]);
+      //   _swapRows(final_board, j, new_order[j]);
+      // }
     }
   }
 
@@ -180,9 +180,26 @@ class Sudoku {
     }
   }
 
-  void _scrambleFloors() {}
+  // void _scrambleFloors() {
+  //   var indices = List(cell_size);
+  //   for (var i = 0; i < cell_size; i++) {
+  //     indices[i] = i;
+  //   }
+  //   var new_order = _getRandomizedOrder(indices);
+  //   print(new_order.toString());
+  //   for (var i = 0; i < cell_size; i++) {
+  //     _swapFloors(initial_board, i, new_order[i]);
+  //     _swapFloors(final_board, i, new_order[i]);
+  //   }
+  // }
 
-  void _scrambleTowers() {}
+  // void _swapFloors(List board, pos1, pos2) {
+  //   for (var i = 0; i < cell_size; i++) {
+  //     _swapRows(board, pos1 * cell_size + i, pos2 * cell_size + i);
+  //   }
+  // }
+
+  // void _scrambleTowers() {}
 
   void _swapRows(List board, int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
