@@ -1,6 +1,5 @@
 import 'dart:core';
 import '../../framework/problem/State.dart';
-import 'package:collection/collection.dart';
 
 /*
  * This class represents states of various tile-moving puzzle problems,

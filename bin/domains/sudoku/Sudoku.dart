@@ -50,10 +50,9 @@ class Sudoku {
   }
 
   void _scrambleBoards() {
-    // var max_iterations = 15;
-    // _scrambleRows();
-    // _scrambleCols();
-    _scrambleFloors();
+    _scrambleRows();
+    _scrambleCols();
+    // _scrambleFloors();
     // _scrambleTowers();
     // _randomizeDigits();
     // _transposeBoards();
@@ -152,32 +151,69 @@ class Sudoku {
     return array;
   }
 
-  void _scrambleRows() {
-    var indices = List(cell_size);
-    for (var i = 0; i < cell_size; i++) {
+  List _getNewPosOrder() {
+    var indices = List(board_size);
+    for (var i = 0; i < board_size; i++) {
       indices[i] = i;
     }
+
     for (var i = 0; i < cell_size; i++) {
-      var new_order = _getRandomizedOrder(indices);
-      // for (var j = 0; j < cell_size - 1; j++) {
-      //   _swapRows(initial_board, j, new_order[j]);
-      //   _swapRows(final_board, j, new_order[j]);
-      // }
+      var new_order = indices.sublist(i * cell_size, i * cell_size + cell_size);
+      new_order = _getRandomizedOrder(new_order);
+      for (var j = 0; j < cell_size; j++) {
+        indices[i * cell_size + j] = new_order[j];
+      }
     }
+    return indices;
+  }
+
+  void _scrambleRows() {
+    var indices = _getNewPosOrder();
+    var initial_copy =
+        List.generate(board_size, (i) => List(board_size), growable: false);
+    var final_copy =
+        List.generate(board_size, (i) => List(board_size), growable: false);
+
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        initial_copy[i][j] = initial_board[indices[i]][j];
+        final_copy[i][j] = final_board[indices[i]][j];
+      }
+    }
+
+    initial_board = _copyTiles(initial_copy);
+    final_board = _copyTiles(final_copy);
   }
 
   void _scrambleCols() {
-    var indices = List(cell_size);
-    for (var i = 0; i < cell_size; i++) {
-      indices[i] = i;
-    }
-    for (var i = 0; i < cell_size; i++) {
-      var new_order = _getRandomizedOrder(indices);
-      for (var j = 0; j < cell_size - 1; j++) {
-        _swapCols(initial_board, j, new_order[j]);
-        _swapCols(final_board, j, new_order[j]);
+    var indices = _getNewPosOrder();
+    var initial_copy =
+        List.generate(board_size, (i) => List(board_size), growable: false);
+    var final_copy =
+        List.generate(board_size, (i) => List(board_size), growable: false);
+
+    for (var i = 0; i < board_size; i++) {
+      for (var j = 0; j < board_size; j++) {
+        initial_copy[i][j] = initial_board[indices[i]][indices[j]];
+        final_copy[i][j] = final_board[indices[i]][indices[j]];
       }
     }
+
+    initial_board = _copyTiles(initial_copy);
+    final_board = _copyTiles(final_copy);
+  }
+
+  static List _copyTiles(List source) {
+    var rows = source.length;
+    var columns = source[0].length;
+    var dest = List(rows);
+    for (var r = 0; r < rows; r++) {
+      dest[r] = List(columns);
+      for (var c = 0; c < columns; c++) {
+        dest[r][c] = source[r][c];
+      }
+    }
+    return dest;
   }
 
   // void _scrambleFloors() {
@@ -200,37 +236,6 @@ class Sudoku {
   // }
 
   // void _scrambleTowers() {}
-
-  void _swapRows(List board, int pos1, int pos2) {
-    for (var i = 0; i < board_size; i++) {
-      var temp = board[pos1][i];
-      board[pos1][i] = board[pos2][i];
-      board[pos2][i] = temp;
-    }
-  }
-
-  void _swapCols(List board, int pos1, int pos2) {
-    for (var i = 0; i < board_size; i++) {
-      var temp = board[i][pos1];
-      board[i][pos1] = board[i][pos2];
-      board[i][pos2] = temp;
-    }
-  }
-
-  List<int> _getPositionsToSwap() {
-    var pos1 = _getRandom(board_size);
-    int pos2;
-    do {
-      pos2 = _getRandom(cell_size);
-      pos2 = (pos1 ~/ cell_size) * cell_size + pos2;
-    } while (pos1 ~/ cell_size != pos2 ~/ cell_size);
-    return [pos1, pos2];
-  }
-
-  int _getRandom(int max) {
-    var random = Random();
-    return random.nextInt(max);
-  }
 
   @override
   String toString() {
