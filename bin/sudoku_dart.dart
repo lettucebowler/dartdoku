@@ -42,11 +42,12 @@ void main(List<String> arguments) {
   cell_size = problem.cell_size;
   board_size = problem.board_size;
   SudokuState current_state = problem.getCurrentState();
+  print('Initial Board:');
   print(problem.getStateAsString(current_state));
   solveGame();
 
   if (problem.success()) {
-    print('Solved!');
+    print('Solution:');
     print(problem.getStateAsString(problem.getCurrentState()));
   }
 }
