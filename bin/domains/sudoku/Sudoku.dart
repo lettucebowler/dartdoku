@@ -51,8 +51,10 @@ class Sudoku {
 
   void _scrambleBoards() {
     var max_iterations = 15;
-    _scrambleRows(max_iterations);
-    _scrambleCols(max_iterations);
+    _scrambleRows();
+    _scrambleCols();
+    _scrambleFloors();
+    _scrambleTowers();
     _randomizeDigits();
     _transposeBoards();
     _rotateBoards();
@@ -142,7 +144,7 @@ class Sudoku {
     var r = Random();
     var array = List<int>.from(arr);
     for (var i = 0; i < array.length; i++) {
-      var random_pos = r.nextInt(board_size);
+      var random_pos = r.nextInt(array.length);
       var temp = array[i];
       array[i] = array[random_pos];
       array[random_pos] = temp;
@@ -150,21 +152,37 @@ class Sudoku {
     return array;
   }
 
-  void _scrambleRows(int iterations) {
-    for (var i = 0; i < board_size; i++) {
-      var positions = _getPositionsToSwap();
-      _swapRows(initial_board, positions[0], positions[1]);
-      _swapRows(final_board, positions[0], positions[1]);
+  void _scrambleRows() {
+    var indices = List(cell_size);
+    for (var i = 0; i < cell_size; i++) {
+      indices[i] = i;
+    }
+    for (var i = 0; i < cell_size; i++) {
+      var new_order = _getRandomizedOrder(indices);
+      for (var j = 0; j < cell_size - 1; j++) {
+        _swapRows(initial_board, j, new_order[j]);
+        _swapRows(final_board, j, new_order[j]);
+      }
     }
   }
 
-  void _scrambleCols(int iterations) {
-    for (var i = 0; i < board_size; i++) {
-      var positions = _getPositionsToSwap();
-      _swapCols(initial_board, positions[0], positions[1]);
-      _swapCols(final_board, positions[0], positions[1]);
+  void _scrambleCols() {
+    var indices = List(cell_size);
+    for (var i = 0; i < cell_size; i++) {
+      indices[i] = i;
+    }
+    for (var i = 0; i < cell_size; i++) {
+      var new_order = _getRandomizedOrder(indices);
+      for (var j = 0; j < cell_size - 1; j++) {
+        _swapCols(initial_board, j, new_order[j]);
+        _swapCols(final_board, j, new_order[j]);
+      }
     }
   }
+
+  void _scrambleFloors() {}
+
+  void _scrambleTowers() {}
 
   void _swapRows(List board, int pos1, int pos2) {
     for (var i = 0; i < board_size; i++) {
