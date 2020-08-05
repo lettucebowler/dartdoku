@@ -101,10 +101,6 @@ class Sudoku {
         pos2 = _getRandom(board_size);
       } while (initial_board[pos1][pos2] != 0);
       initial_board[pos1][pos2] = final_board[pos1][pos2];
-      if (initial_board[pos2][pos1] == 0) {
-        initial_board[pos2][pos1] = final_board[pos2][pos1];
-        i++;
-      }
     }
   }
 
