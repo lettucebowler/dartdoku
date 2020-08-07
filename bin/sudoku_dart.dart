@@ -40,7 +40,7 @@ void solveGame(SudokuProblem problem) {
 
 void main(List<String> arguments) {
   // var sudoku = Sudoku.withMoreHints(0);
-  problem = SudokuProblem();
+  problem = SudokuProblem.withMoreHints(13);
 
   SudokuState current_state = problem.getCurrentState();
   print('Initial Board:');

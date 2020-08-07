@@ -3,19 +3,16 @@ import 'dart:math';
 class Sudoku {
   int board_size;
   int cell_size;
-  int hint_offset;
   List initial_board;
   List final_board;
 
   Sudoku() {
     _initialize();
     _scrambleBoards();
-    _addClues(hint_offset);
   }
 
   Sudoku.withMoreHints(int hint_offset) {
     _initialize();
-    this.hint_offset = hint_offset;
     _scrambleBoards();
     _addClues(hint_offset);
   }
@@ -23,7 +20,6 @@ class Sudoku {
   void _initialize() {
     cell_size = 3;
     board_size = cell_size * cell_size;
-    hint_offset = 0;
     var root = [
       [
         // Board 1
