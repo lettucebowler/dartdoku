@@ -45,7 +45,7 @@ class SudokuProblem extends Problem {
   }
 
   SudokuProblem.resume(
-      int hint_offset, List initial_board, List current_board, List final_board)
+      List initial_board, List current_board, List final_board)
       : super() {
     super.setName('Sudoku');
     super.setIntroduction(
