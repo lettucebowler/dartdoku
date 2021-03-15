@@ -4,7 +4,6 @@ import 'package:args/args.dart';
 
 //My stuff
 import 'domains/sudoku/SudokuProblem.dart';
-import 'domains/sudoku/SudokuState.dart';
 
 late SudokuProblem problem;
 int board_size = 9;
@@ -27,8 +26,8 @@ void main(List<String> arguments) {
     var hints = int.parse(argResults['initialHints']) - 17;
     problem = SudokuProblem.withMoreHints(hints);
     print('Initial Board:');
-    print(problem.getStateAsString(problem.getCurrentState() as SudokuState));
+    print(problem.getStateAsString(problem.getCurrentState()));
     print('Solution:');
-    print(problem.getStateAsString(problem.getFinalState() as SudokuState));
+    print(problem.getStateAsString(problem.getFinalState()));
   }
 }

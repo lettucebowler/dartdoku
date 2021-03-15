@@ -14,7 +14,11 @@ class Sudoku {
   Sudoku.withMoreHints(int hintOffset) {
     _initialize();
     _scrambleBoards();
-    _addClues(hintOffset);
+    if (hintOffset > -1) {
+      _addClues(hintOffset);
+    } else {
+      throw Exception('hint offset must be non-negative integer');
+    }
   }
 
   void _initialize() {
