@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import '../../framework/problem/Problem.dart';
 import 'Sudoku.dart';
 import 'SudokuState.dart';
@@ -22,7 +24,7 @@ class SudokuProblem extends Problem {
     super.setFinalState(SudokuState(sudoku!.finalBoard));
   }
 
-  SudokuProblem.withMoreHints(int hintOffset) : super() {
+  SudokuProblem.withMoreHints(int hints) : super() {
     super.setName('Sudoku');
     super.setIntroduction(
         'Place the numbers 1-9 in each of the three 3x3 grids. '
@@ -32,10 +34,10 @@ class SudokuProblem extends Problem {
         'row or column that contains the same number. '
         'The game is finished when the grid is full.');
     sudoku = Sudoku();
-    sudoku!.addClues(hintOffset);
     super.setInitialState(SudokuState(sudoku!.initialBoard));
     super.setCurrentState(super.getInitialState());
     super.setFinalState(SudokuState(sudoku!.finalBoard));
+    addClues(hints - 17);
   }
 
   SudokuProblem.fromJSON(Map<String, dynamic> json) : super() {
@@ -107,10 +109,26 @@ class SudokuProblem extends Problem {
 
   void addClues(int hintOffset) {
     if (initialState.equals(currentState)) {
-      sudoku!.addClues(hintOffset);
-      super.setInitialState(SudokuState(sudoku!.initialBoard));
-      super.setCurrentState(SudokuState(sudoku!.initialBoard));
-      super.setFinalState(SudokuState(sudoku!.finalBoard));
+      if (hintOffset >= 0 && hintOffset <= 64) {
+        var random = Random();
+        var pos1;
+        var pos2;
+        var initialBoard = getInitialState().getTiles();
+        var finalBoard = getFinalState().getTiles();
+        for (var i = 0; i < hintOffset; i++) {
+          do {
+            pos1 = random.nextInt(boardSize);
+            pos2 = random.nextInt(boardSize);
+          } while (initialBoard[pos1][pos2] != 0);
+          initialBoard[pos1][pos2] = finalBoard[pos1][pos2];
+        }
+
+        super.setInitialState(SudokuState(initialBoard));
+        super.setCurrentState(SudokuState(initialBoard));
+        super.setFinalState(SudokuState(finalBoard));
+      } else {
+        throw ArgumentError('Hint offset not in inclusive range 0..64');
+      }
     } else {
       throw Exception(
           'This method should only be used on an unplayed problem to increase the initial hints.');

@@ -104,23 +104,6 @@ class Sudoku {
     _rotateBoards();
   }
 
-  void addClues(int hintOffset) {
-    if (hintOffset >= 0 && hintOffset <= 81) {
-      var pos1;
-      var pos2;
-      var i;
-      for (i = 0; i < hintOffset; i++) {
-        do {
-          pos1 = _getRandom(boardSize);
-          pos2 = _getRandom(boardSize);
-        } while (initialBoard[pos1][pos2] != 0);
-        initialBoard[pos1][pos2] = finalBoard[pos1][pos2];
-      }
-    } else {
-      throw ArgumentError('Hint offset not in inclusive range 17..81.');
-    }
-  }
-
   void _transposeBoards() {
     var r = _getRandom(2);
     if (r % 2 == 0) {

@@ -1,3 +1,3 @@
-## 1.0.1
+## 1.0.2
 
-- Updated to use updated SudokuProblem framework
+- fix addClues to not rely on Sudoku class

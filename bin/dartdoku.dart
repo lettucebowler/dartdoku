@@ -19,7 +19,7 @@ void main(List<String> arguments) {
   if (argResults['help']) {
     print(help);
   } else {
-    var hints = int.parse(argResults['initialHints']) - 17;
+    var hints = int.parse(argResults['initialHints']);
     var count = int.parse(argResults['count']);
     var problems = getProblems(hints, count);
     for (var problem in problems) {
