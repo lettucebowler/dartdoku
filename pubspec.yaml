@@ -1,13 +1,13 @@
 name: dartdoku
 description: A sample command-line application.
-version: 1.0.0
+version: 1.0.1
 homepage: https://hello.rusondia.net
 
 environment:
   sdk: '>=2.12.1 <3.0.0'
 
 dependencies:
- args: ^2.0.0-nullsafety.0
+ args: ^2.0.0
 
 dev_dependencies:
   pedantic: ^1.9.0

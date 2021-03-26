@@ -303,39 +303,42 @@ class Sudoku {
   @override
   String toString() {
     var buffer = StringBuffer();
-    buffer.write(_boardToString(finalBoard));
+    buffer.write('Initial Board\n');
+    buffer.write(boardToString(initialBoard));
     buffer.write('\n');
-    buffer.write(_boardToString(initialBoard));
+    buffer.write('Final Board\n');
+    buffer.write(boardToString(finalBoard));
     return buffer.toString();
   }
 
-  String _boardToString(List board) {
+  static String boardToString(List board) {
     var buffer = StringBuffer();
     var space = '';
-    var divider = _makeDivider();
-    for (var i = 0; i < cellSize; i++) {
+    var divider = _makeDivider((sqrt(board.length)).toInt());
+    for (var i = 0; i < sqrt(board.length); i++) {
       buffer.write(space);
       buffer.write(divider);
       space = '\n';
-      for (var j = 0; j < cellSize; j++) {
+      for (var j = 0; j < sqrt(board.length); j++) {
         buffer.write(space);
-        buffer.write(_rowToString(board[(i * cellSize + j) % boardSize]));
+        buffer.write(_rowToString(board[(i * 3 + j) % 9]));
       }
     }
     buffer.write(space + divider);
     return buffer.toString();
   }
 
-  String _rowToString(List board) {
+  static String _rowToString(List board) {
     var buffer = StringBuffer();
     var spacer = '';
-    for (var i = 0; i < boardSize; i++) {
-      if (i % cellSize == 0) {
+    for (var i = 0; i < board.length; i++) {
+      if (i % board.length == 0) {
         spacer = '|';
       }
 
       buffer.write(spacer);
-      var toPlace = board[i] == 0 ? ' ' : board[i];
+      var toPlace =
+          board[i] == 0 || board[i] == '0' ? ' ' : board[i].toString();
       buffer.write(toPlace);
       spacer = ' ';
     }
@@ -343,11 +346,11 @@ class Sudoku {
     return buffer.toString();
   }
 
-  String _makeDivider() {
+  static String _makeDivider(int cellSize) {
     var buffer = StringBuffer();
     for (var i = 0; i < cellSize + 1; i++) {
       buffer.write('+');
-      if (i < cellSize) {
+      if (i < 3) {
         for (var j = 0; j < cellSize * 2 - 1; j++) {
           buffer.write('-');
         }

@@ -3,7 +3,7 @@ import 'Sudoku.dart';
 import 'SudokuState.dart';
 
 class SudokuProblem extends Problem {
-  Sudoku sudoku = Sudoku();
+  late Sudoku? sudoku;
   int cellSize = 3;
   int boardSize = 9;
 
@@ -17,9 +17,9 @@ class SudokuProblem extends Problem {
         'row or column that contains the same number. '
         'The game is finished when the grid is full.');
     sudoku = Sudoku();
-    super.setInitialState(SudokuState(sudoku.initialBoard));
+    super.setInitialState(SudokuState(sudoku!.initialBoard));
     super.setCurrentState(super.getInitialState());
-    super.setFinalState(SudokuState(sudoku.finalBoard));
+    super.setFinalState(SudokuState(sudoku!.finalBoard));
   }
 
   SudokuProblem.withMoreHints(int hintOffset) : super() {
@@ -31,10 +31,28 @@ class SudokuProblem extends Problem {
         'for each cell in the grid, there can be no other cell with the same '
         'row or column that contains the same number. '
         'The game is finished when the grid is full.');
-    sudoku.addClues(hintOffset);
-    super.setInitialState(SudokuState(sudoku.initialBoard));
+    sudoku = Sudoku();
+    sudoku!.addClues(hintOffset);
+    super.setInitialState(SudokuState(sudoku!.initialBoard));
     super.setCurrentState(super.getInitialState());
-    super.setFinalState(SudokuState(sudoku.finalBoard));
+    super.setFinalState(SudokuState(sudoku!.finalBoard));
+  }
+
+  SudokuProblem.fromJSON(Map<String, dynamic> json) : super() {
+    super.setName('Sudoku');
+    super.setIntroduction(
+        'Place the numbers 1-9 in each of the three 3x3 grids. '
+        'Each row must contain each number 1-9. '
+        'Each Column must contain each number 1-9'
+        'for each cell in the grid, there can be no other cell with the same '
+        'row or column that contains the same number. '
+        'The game is finished when the grid is full.');
+    var initialBoard = _stringToBoard(json['initial board']);
+    var currentBoard = initialBoard;
+    var finalBoard = _stringToBoard(json['final board']);
+    super.setInitialState(SudokuState(initialBoard));
+    super.setCurrentState(SudokuState(currentBoard));
+    super.setFinalState(SudokuState(finalBoard));
   }
 
   SudokuProblem.resume(List initialBoard, List currentBoard, List finalBoard)
@@ -50,6 +68,26 @@ class SudokuProblem extends Problem {
     super.setInitialState(SudokuState(initialBoard));
     super.setCurrentState(SudokuState(currentBoard));
     super.setFinalState(SudokuState(finalBoard));
+  }
+
+  List<List<int>> _stringToBoard(String board) {
+    var newBoard = [
+      <int>[],
+      <int>[],
+      <int>[],
+      <int>[],
+      <int>[],
+      <int>[],
+      <int>[],
+      <int>[],
+      <int>[]
+    ];
+    if (board.length == 81) {
+      for (var i = 0; i < board.length; i++) {
+        newBoard[i ~/ 9].add(int.parse(board[i]));
+      }
+    }
+    return newBoard;
   }
 
   @override
@@ -69,10 +107,10 @@ class SudokuProblem extends Problem {
 
   void addClues(int hintOffset) {
     if (initialState.equals(currentState)) {
-      sudoku.addClues(hintOffset);
-      super.setInitialState(SudokuState(sudoku.initialBoard));
-      super.setCurrentState(SudokuState(sudoku.initialBoard));
-      super.setFinalState(SudokuState(sudoku.finalBoard));
+      sudoku!.addClues(hintOffset);
+      super.setInitialState(SudokuState(sudoku!.initialBoard));
+      super.setCurrentState(SudokuState(sudoku!.initialBoard));
+      super.setFinalState(SudokuState(sudoku!.finalBoard));
     } else {
       throw Exception(
           'This method should only be used on an unplayed problem to increase the initial hints.');
@@ -91,10 +129,6 @@ class SudokuProblem extends Problem {
     setCurrentState(SudokuState.applyMove(getCurrentState(), num, row, col));
     var isLegalMove = isLegal(row, col);
     return isLegalMove;
-  }
-
-  Sudoku getSudoku() {
-    return sudoku;
   }
 
   bool isInitialHint(int row, int col) {
@@ -204,56 +238,8 @@ class SudokuProblem extends Problem {
     return complete;
   }
 
-  String getStateAsString(SudokuState state) {
-    var board = state.getTiles();
-    return _boardToString(board);
-  }
-
-  String _boardToString(List board) {
-    var buffer = StringBuffer();
-    var space = '';
-    var divider = _makeDivider();
-    for (var i = 0; i < cellSize; i++) {
-      buffer.write(space);
-      buffer.write(divider);
-      space = '\n';
-      for (var j = 0; j < cellSize; j++) {
-        buffer.write(space);
-        buffer.write(_rowToString(board[(i * cellSize + j) % boardSize]));
-      }
-    }
-    buffer.write(space + divider);
-    return buffer.toString();
-  }
-
-  String _rowToString(List board) {
-    var buffer = StringBuffer();
-    var spacer = '';
-    for (var i = 0; i < boardSize; i++) {
-      if (i % cellSize == 0) {
-        spacer = '|';
-      }
-
-      buffer.write(spacer);
-      var toPlace = board[i] == 0 ? ' ' : board[i];
-      buffer.write(toPlace);
-      spacer = ' ';
-    }
-    buffer.write('|');
-    return buffer.toString();
-  }
-
-  String _makeDivider() {
-    var buffer = StringBuffer();
-    for (var i = 0; i < cellSize + 1; i++) {
-      buffer.write('+');
-      if (i < cellSize) {
-        for (var j = 0; j < cellSize * 2 - 1; j++) {
-          buffer.write('-');
-        }
-      }
-    }
-    return buffer.toString();
+  static String stateToString(SudokuState state) {
+    return Sudoku.boardToString(state.getTiles());
   }
 
   @override
