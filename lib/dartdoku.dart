@@ -23,7 +23,7 @@ void main(List<String> arguments) {
     var hints = int.parse(argResults['initialHints']) - 17;
     var count = int.parse(argResults['count']);
     var problems = getProblems(hints, count);
-    for (SudokuProblem problem in problems) {
+    for (var problem in problems) {
       print('Initial Board:');
       print(problem.getStateAsString(problem.getCurrentState()));
       print('Solution:');
