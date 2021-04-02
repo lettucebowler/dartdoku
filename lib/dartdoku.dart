@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'package:pedantic/pedantic.dart';
 import 'domains/sudoku/SudokuProblem.dart';
 
 String help =
@@ -7,12 +8,13 @@ String help =
 Future<List<SudokuProblem>> getProblems(int hints, int count) async {
   var problems = <SudokuProblem>[];
   for (var i = 0; i < count; i++) {
-    var problem = SudokuProblem.withMoreHints(hints);
-    problems.add(problem);
+    unawaited(getProblem(hints).then((p) {
+      problems.add(p);
+    }));
   }
   return problems;
 }
 
-SudokuProblem getProblem(int hints) {
+Future<SudokuProblem> getProblem(int hints) async {
   return SudokuProblem.withMoreHints(hints);
 }

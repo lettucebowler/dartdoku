@@ -1,3 +1,3 @@
 #!/bin/bash
 mkdir build
-dart compile exe bin/sudoku_dart.dart -o build/sudoku
+dart compile exe bin/dartdoku.dart -o build/dartdoku

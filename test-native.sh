@@ -1,7 +1,6 @@
 #!/bin/bash
-mkdir build
-dart compile exe bin/sudoku_dart.dart -o build/sudoku
+./compile.sh
 for f in {1..50}
 do
-    time build/sudoku >> /dev/null
+    time build/dartdoku >> /dev/null
 done

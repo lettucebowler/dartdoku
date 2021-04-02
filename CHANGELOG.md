@@ -1,3 +1,3 @@
-## 1.0.3
+## 1.0.4
 
-- getProblems is async now
+- async changes
