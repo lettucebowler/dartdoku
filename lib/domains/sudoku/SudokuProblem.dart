@@ -260,6 +260,18 @@ class SudokuProblem extends Problem {
     return Sudoku.boardToString(state.getTiles());
   }
 
+  static String boardToString(SudokuState state) {
+    var board = state.getTiles();
+    var string = '';
+    for (var i = 0; i < board.length; i++) {
+      for (var j = 0; j < (board[i] as List).length; j++) {
+        // ignore: use_string_buffers
+        string += board[i][j].toString();
+      }
+    }
+    return string;
+  }
+
   @override
   bool success() {
     return getCurrentState().equals(getFinalState());

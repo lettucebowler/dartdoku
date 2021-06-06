@@ -27,6 +27,8 @@ void main(List<String> arguments) async {
       print(SudokuProblem.stateToString(problem.getInitialState()));
       print('\nFinal Board');
       print(SudokuProblem.stateToString(problem.getFinalState()));
+      print(SudokuProblem.boardToString(problem.getInitialState()));
+      print(SudokuProblem.boardToString(problem.getFinalState()));
     }
   }
 }
