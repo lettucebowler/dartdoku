@@ -1,3 +1,7 @@
+# 1.1.0
+ignored .failed_tracker
+add board encoder for api
+
 # 1.0.4
 update to async logic
 upgrade to 1.0.3 and change getProblems to async
