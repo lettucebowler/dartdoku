@@ -49,9 +49,9 @@ class SudokuProblem extends Problem {
         'for each cell in the grid, there can be no other cell with the same '
         'row or column that contains the same number. '
         'The game is finished when the grid is full.');
-    var initialBoard = _stringToBoard(json['initial board']);
+    var initialBoard = stringToBoard(json['initial board']);
     var currentBoard = initialBoard;
-    var finalBoard = _stringToBoard(json['final board']);
+    var finalBoard = stringToBoard(json['final board']);
     super.setInitialState(SudokuState(initialBoard));
     super.setCurrentState(SudokuState(currentBoard));
     super.setFinalState(SudokuState(finalBoard));
@@ -72,7 +72,7 @@ class SudokuProblem extends Problem {
     super.setFinalState(SudokuState(finalBoard));
   }
 
-  List<List<int>> _stringToBoard(String board) {
+  List<List<int>> stringToBoard(String board) {
     var newBoard = [
       <int>[],
       <int>[],
