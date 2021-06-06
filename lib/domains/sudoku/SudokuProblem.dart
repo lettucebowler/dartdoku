@@ -72,7 +72,7 @@ class SudokuProblem extends Problem {
     super.setFinalState(SudokuState(finalBoard));
   }
 
-  List<List<int>> stringToBoard(String board) {
+  static List<List<int>> stringToBoard(String board) {
     var newBoard = [
       <int>[],
       <int>[],
