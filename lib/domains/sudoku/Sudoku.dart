@@ -197,14 +197,11 @@ class Sudoku {
 
   void _scrambleRows() {
     var indices = _getNewPosOrder();
-    print(indices);
     var initialCopy = getEmptyBoard(9);
     var finalCopy = getEmptyBoard(9);
 
     for (var i = 0; i < boardSize; i++) {
       for (var j = 0; j < boardSize; j++) {
-        print('I: $i');
-        print('J: $j');
         initialCopy[i][j] = initialBoard[indices[i]][j];
         finalCopy[i][j] = finalBoard[indices[i]][j];
       }

@@ -18,7 +18,6 @@ class SudokuProblem {
 
   SudokuProblem.withMoreHints(int hints) {
     var sudoku = Sudoku();
-    print(sudoku.initialBoard);
     initialState = SudokuState(sudoku.initialBoard);
     currentState = initialState;
     finalState = SudokuState(sudoku.finalBoard);
