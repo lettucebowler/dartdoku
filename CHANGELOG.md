@@ -1,3 +1,6 @@
+# 1.2.6
+added .from constructor
+
 # 1.2.5
 cleanup debug prints
 
