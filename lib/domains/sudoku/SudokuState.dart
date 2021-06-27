@@ -22,7 +22,7 @@ class SudokuState {
   SudokuState.fromString(boardString) {
     if (board.length == 81) {
       for (var i = 0; i < board.length; i++) {
-        board[i ~/ 9].add(int.parse(boardString[i]));
+        board[i ~/ 9][i % 9] = (int.parse(boardString[i]));
       }
     }
   }
