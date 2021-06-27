@@ -1,3 +1,6 @@
+# 1.2.3
+fixed SudokuState.fromString() bug
+
 # 1.2.2
 minor tweaks
 
