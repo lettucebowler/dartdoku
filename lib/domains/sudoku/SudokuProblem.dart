@@ -1,110 +1,41 @@
 import 'dart:math';
-
-import '../../framework/problem/Problem.dart';
 import 'Sudoku.dart';
 import 'SudokuState.dart';
 
-class SudokuProblem extends Problem {
-  late Sudoku? sudoku;
+class SudokuProblem {
   int cellSize = 3;
   int boardSize = 9;
+  late SudokuState initialState;
+  late SudokuState currentState;
+  late SudokuState finalState;
 
-  SudokuProblem() : super() {
-    super.setName('Sudoku');
-    super.setIntroduction(
-        'Place the numbers 1-9 in each of the three 3x3 grids. '
-        'Each row must contain each number 1-9. '
-        'Each Column must contain each number 1-9'
-        'for each cell in the grid, there can be no other cell with the same '
-        'row or column that contains the same number. '
-        'The game is finished when the grid is full.');
-    sudoku = Sudoku();
-    super.setInitialState(SudokuState(sudoku!.initialBoard));
-    super.setCurrentState(super.getInitialState());
-    super.setFinalState(SudokuState(sudoku!.finalBoard));
+  SudokuProblem() {
+    var sudoku = Sudoku();
+    initialState = SudokuState(sudoku.initialBoard);
+    currentState = initialState;
+    finalState = SudokuState(sudoku.finalBoard);
   }
 
-  SudokuProblem.withMoreHints(int hints) : super() {
-    super.setName('Sudoku');
-    super.setIntroduction(
-        'Place the numbers 1-9 in each of the three 3x3 grids. '
-        'Each row must contain each number 1-9. '
-        'Each Column must contain each number 1-9'
-        'for each cell in the grid, there can be no other cell with the same '
-        'row or column that contains the same number. '
-        'The game is finished when the grid is full.');
-    sudoku = Sudoku();
-    super.setInitialState(SudokuState(sudoku!.initialBoard));
-    super.setCurrentState(super.getInitialState());
-    super.setFinalState(SudokuState(sudoku!.finalBoard));
+  SudokuProblem.withMoreHints(int hints) {
+    var sudoku = Sudoku();
+    print(sudoku.initialBoard);
+    initialState = SudokuState(sudoku.initialBoard);
+    currentState = initialState;
+    finalState = SudokuState(sudoku.finalBoard);
     addClues(hints - 17);
   }
 
-  SudokuProblem.fromJSON(Map<String, dynamic> json) : super() {
-    super.setName('Sudoku');
-    super.setIntroduction(
-        'Place the numbers 1-9 in each of the three 3x3 grids. '
-        'Each row must contain each number 1-9. '
-        'Each Column must contain each number 1-9'
-        'for each cell in the grid, there can be no other cell with the same '
-        'row or column that contains the same number. '
-        'The game is finished when the grid is full.');
-    var initialBoard = stringToBoard(json['initial board']);
-    var currentBoard = initialBoard;
-    var finalBoard = stringToBoard(json['final board']);
-    super.setInitialState(SudokuState(initialBoard));
-    super.setCurrentState(SudokuState(currentBoard));
-    super.setFinalState(SudokuState(finalBoard));
+  SudokuProblem.fromJSON(Map<String, dynamic> json) {
+    initialState = SudokuState.fromString(json['initial board']);
+    currentState = initialState;
+    finalState = SudokuState.fromString(json['final board']);
   }
 
-  SudokuProblem.resume(List initialBoard, List currentBoard, List finalBoard)
-      : super() {
-    super.setName('Sudoku');
-    super.setIntroduction(
-        'Place the numbers 1-9 in each of the three 3x3 grids. '
-        'Each row must contain each number 1-9. '
-        'Each Column must contain each number 1-9'
-        'for each cell in the grid, there can be no other cell with the same '
-        'row or column that contains the same number. '
-        'The game is finished when the grid is full.');
-    super.setInitialState(SudokuState(initialBoard));
-    super.setCurrentState(SudokuState(currentBoard));
-    super.setFinalState(SudokuState(finalBoard));
-  }
-
-  static List<List<int>> stringToBoard(String board) {
-    var newBoard = [
-      <int>[],
-      <int>[],
-      <int>[],
-      <int>[],
-      <int>[],
-      <int>[],
-      <int>[],
-      <int>[],
-      <int>[]
-    ];
-    if (board.length == 81) {
-      for (var i = 0; i < board.length; i++) {
-        newBoard[i ~/ 9].add(int.parse(board[i]));
-      }
-    }
-    return newBoard;
-  }
-
-  @override
-  SudokuState getInitialState() {
-    return initialState as SudokuState;
-  }
-
-  @override
-  SudokuState getCurrentState() {
-    return currentState as SudokuState;
-  }
-
-  @override
-  SudokuState getFinalState() {
-    return finalState as SudokuState;
+  SudokuProblem.resume(List<List<int>> initialBoard,
+      List<List<int>> currentBoard, List<List<int>> finalBoard) {
+    initialState = SudokuState(initialBoard);
+    currentState = SudokuState(currentBoard);
+    finalState = SudokuState(finalBoard);
   }
 
   void addClues(int hintOffset) {
@@ -113,8 +44,8 @@ class SudokuProblem extends Problem {
         var random = Random();
         var pos1;
         var pos2;
-        var initialBoard = getInitialState().getTiles();
-        var finalBoard = getFinalState().getTiles();
+        var initialBoard = initialState.board;
+        var finalBoard = finalState.board;
         for (var i = 0; i < hintOffset; i++) {
           do {
             pos1 = random.nextInt(boardSize);
@@ -123,9 +54,8 @@ class SudokuProblem extends Problem {
           initialBoard[pos1][pos2] = finalBoard[pos1][pos2];
         }
 
-        super.setInitialState(SudokuState(initialBoard));
-        super.setCurrentState(SudokuState(initialBoard));
-        super.setFinalState(SudokuState(finalBoard));
+        initialState = SudokuState(initialBoard);
+        currentState = initialState;
       } else {
         throw ArgumentError('Hint offset not in inclusive range 0..64');
       }
@@ -136,28 +66,27 @@ class SudokuProblem extends Problem {
   }
 
   void reset() {
-    currentState = getInitialState();
+    currentState = initialState;
   }
 
   void solve() {
-    currentState = getFinalState();
+    currentState = finalState;
   }
 
   bool applyMove(int num, int row, int col) {
-    setCurrentState(SudokuState.applyMove(getCurrentState(), num, row, col));
+    currentState = currentState.applyMove(num, row, col);
     var isLegalMove = isLegal(row, col);
     return isLegalMove;
   }
 
   bool isInitialHint(int row, int col) {
-    var state = getInitialState();
-    return (state.getTiles()[row][col] != 0);
+    return (initialState.board[row][col] != 0);
   }
 
   bool isCorrect(int row, int col) {
-    var current = getCurrentState();
-    var goal = getFinalState();
-    return (current.getTiles()[row][col] == goal.getTiles()[row][col]);
+    var currentBoard = currentState.board;
+    var finalBoard = finalState.board;
+    return (currentBoard[row][col] == finalBoard[row][col]);
   }
 
   bool isLegal(int row, int col) {
@@ -167,8 +96,7 @@ class SudokuProblem extends Problem {
   }
 
   bool _checkRowForDuplicates(int row, int col) {
-    var currentState = getCurrentState();
-    var currentTiles = currentState.getTiles();
+    var currentTiles = currentState.board;
     var count = 0;
     for (var i = 0; i < boardSize; i++) {
       if (currentTiles[row][i] == currentTiles[row][col]) {
@@ -179,8 +107,7 @@ class SudokuProblem extends Problem {
   }
 
   bool _checkColForDuplicates(int row, int col) {
-    var current_state = getCurrentState();
-    var currentTiles = current_state.getTiles();
+    var currentTiles = currentState.board;
     var count = 0;
     for (var i = 0; i < boardSize; i++) {
       if (currentTiles[i][col] == currentTiles[row][col]) {
@@ -191,8 +118,7 @@ class SudokuProblem extends Problem {
   }
 
   bool _checkBlockForDuplicates(int row, int col) {
-    var currentState = getCurrentState();
-    var currentTiles = currentState.getTiles();
+    var currentTiles = currentState.board;
     var count = 0;
     var startRow = row ~/ cellSize * cellSize;
     var startCol = col ~/ cellSize * cellSize;
@@ -209,10 +135,8 @@ class SudokuProblem extends Problem {
 
   bool checkRowCompletion(int row) {
     var complete = true;
-    var currentState = getCurrentState();
-    var finalState = getFinalState();
-    var currentTiles = currentState.getTiles();
-    var finalTiles = finalState.getTiles();
+    var currentTiles = currentState.board;
+    var finalTiles = finalState.board;
     for (var i = 0; i < currentTiles.length; i++) {
       if (currentTiles[row][i] != finalTiles[row][i]) {
         complete = false;
@@ -224,10 +148,8 @@ class SudokuProblem extends Problem {
 
   bool checkColCompletion(int col) {
     var complete = true;
-    var currentState = getCurrentState();
-    var finalState = getFinalState();
-    var currentTiles = currentState.getTiles();
-    var finalTiles = finalState.getTiles();
+    var currentTiles = currentState.board;
+    var finalTiles = finalState.board;
     for (var i = 0; i < currentTiles.length; i++) {
       if (currentTiles[i][col] != finalTiles[i][col]) {
         complete = false;
@@ -239,10 +161,8 @@ class SudokuProblem extends Problem {
 
   bool checkBlockCompletion(int row, int col) {
     var complete = true;
-    var currentState = getCurrentState();
-    var finalState = getFinalState();
-    var currentTiles = currentState.getTiles();
-    var finalTiles = finalState.getTiles();
+    var currentTiles = currentState.board;
+    var finalTiles = finalState.board;
     var startRow = row ~/ cellSize * cellSize;
     var startCol = col ~/ cellSize * cellSize;
     for (var i = 0; i < cellSize; i++) {
@@ -257,11 +177,11 @@ class SudokuProblem extends Problem {
   }
 
   static String stateToString(SudokuState state) {
-    return Sudoku.boardToString(state.getTiles());
+    return Sudoku.boardToString(state.board);
   }
 
   static String boardToString(SudokuState state) {
-    var board = state.getTiles();
+    var board = state.board;
     var string = '';
     for (var i = 0; i < board.length; i++) {
       for (var j = 0; j < (board[i] as List).length; j++) {
@@ -272,8 +192,7 @@ class SudokuProblem extends Problem {
     return string;
   }
 
-  @override
   bool success() {
-    return getCurrentState().equals(getFinalState());
+    return currentState.equals(finalState);
   }
 }

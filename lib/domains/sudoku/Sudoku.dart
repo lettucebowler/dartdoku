@@ -3,8 +3,8 @@ import 'dart:math';
 class Sudoku {
   int boardSize = 9;
   int cellSize = 3;
-  late List initialBoard;
-  late List finalBoard;
+  List<List<int>> initialBoard = getEmptyBoard(9);
+  List<List<int>> finalBoard = getEmptyBoard(9);
 
   Sudoku() {
     _initialize();
@@ -179,10 +179,10 @@ class Sudoku {
     return array;
   }
 
-  List _getNewPosOrder() {
-    var indices = []..length = boardSize;
+  List<int> _getNewPosOrder() {
+    var indices = <int>[];
     for (var i = 0; i < boardSize; i++) {
-      indices[i] = i;
+      indices.add(i);
     }
 
     for (var i = 0; i < cellSize; i++) {
@@ -197,11 +197,14 @@ class Sudoku {
 
   void _scrambleRows() {
     var indices = _getNewPosOrder();
-    var initialCopy = List.generate(boardSize, (i) => []..length = boardSize);
-    var finalCopy = List.generate(boardSize, (i) => []..length = boardSize);
+    print(indices);
+    var initialCopy = getEmptyBoard(9);
+    var finalCopy = getEmptyBoard(9);
 
     for (var i = 0; i < boardSize; i++) {
       for (var j = 0; j < boardSize; j++) {
+        print('I: $i');
+        print('J: $j');
         initialCopy[i][j] = initialBoard[indices[i]][j];
         finalCopy[i][j] = finalBoard[indices[i]][j];
       }
@@ -213,9 +216,8 @@ class Sudoku {
 
   void _scrambleCols() {
     var indices = _getNewPosOrder();
-    var initialCopy = List.generate(boardSize, (i) => []..length = boardSize);
-    var finalCopy = List.generate(boardSize, (i) => []..length = boardSize);
-
+    var initialCopy = getEmptyBoard(9);
+    var finalCopy = getEmptyBoard(9);
     for (var i = 0; i < boardSize; i++) {
       for (var j = 0; j < boardSize; j++) {
         initialCopy[i][j] = initialBoard[i][indices[j]];
@@ -227,23 +229,26 @@ class Sudoku {
     finalBoard = _copyTiles(finalCopy);
   }
 
-  static List _copyTiles(List source) {
-    var rows = source.length;
-    var columns = source[0].length;
-    var dest = []..length = rows;
-    for (var r = 0; r < rows; r++) {
-      dest[r] = []..length = columns;
-      for (var c = 0; c < columns; c++) {
-        dest[r][c] = source[r][c];
+  static List<List<int>> _copyTiles(List<List<int>> source) {
+    var dest = getEmptyBoard(9);
+    for (var i = 0; i < source.length; i++) {
+      for (var j = 0; j < source.length; j++) {
+        dest[i][j] = (source[i][j]);
       }
     }
     return dest;
   }
 
+  static List<List<int>> getEmptyBoard(int boardSize) {
+    var board = List<List<int>>.generate(
+        boardSize, (i) => List<int>.filled(9, 0, growable: false));
+    return board;
+  }
+
   void _scrambleFloors() {
-    var indices = _getNewPosOrder().sublist(0, cellSize);
-    var initialCopy = List.generate(boardSize, (i) => []..length = boardSize);
-    var finalCopy = List.generate(boardSize, (i) => []..length = boardSize);
+    var indices = _getNewPosOrder();
+    var initialCopy = getEmptyBoard(9);
+    var finalCopy = getEmptyBoard(9);
     for (var i = 0; i < cellSize; i++) {
       for (var j = 0; j < boardSize; j++) {
         for (var k = 0; k < cellSize; k++) {
@@ -260,9 +265,9 @@ class Sudoku {
   }
 
   void _scrambleTowers() {
-    var indices = _getNewPosOrder().sublist(0, cellSize);
-    var initialCopy = List.generate(boardSize, (i) => []..length = boardSize);
-    var finalCopy = List.generate(boardSize, (i) => []..length = boardSize);
+    var indices = _getNewPosOrder();
+    var initialCopy = getEmptyBoard(9);
+    var finalCopy = getEmptyBoard(9);
     for (var i = 0; i < cellSize; i++) {
       for (var j = 0; j < boardSize; j++) {
         for (var k = 0; k < cellSize; k++) {

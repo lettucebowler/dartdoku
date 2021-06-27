@@ -24,11 +24,9 @@ void main(List<String> arguments) async {
     var problems = await getProblems(hints, count);
     for (var problem in problems) {
       print('Initial board');
-      print(SudokuProblem.stateToString(problem.getInitialState()));
+      print(SudokuProblem.stateToString(problem.initialState));
       print('\nFinal Board');
-      print(SudokuProblem.stateToString(problem.getFinalState()));
-      print(SudokuProblem.boardToString(problem.getInitialState()));
-      print(SudokuProblem.boardToString(problem.getFinalState()));
+      print(SudokuProblem.stateToString(problem.finalState));
     }
   }
 }
