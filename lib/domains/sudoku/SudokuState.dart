@@ -62,17 +62,4 @@ class SudokuState {
     }
     return equal;
   }
-
-  static List _copyTiles(List source) {
-    var rows = source.length;
-    var columns = source[0].length;
-    var dest = []..length = rows;
-    for (var r = 0; r < rows; r++) {
-      dest[r] = []..length = columns;
-      for (var c = 0; c < columns; c++) {
-        dest[r][c] = source[r][c];
-      }
-    }
-    return dest;
-  }
 }

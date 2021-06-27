@@ -191,7 +191,7 @@ class SudokuProblem {
     var board = state.board;
     var string = '';
     for (var i = 0; i < board.length; i++) {
-      for (var j = 0; j < (board[i] as List).length; j++) {
+      for (var j = 0; j < (board[i]).length; j++) {
         // ignore: use_string_buffers
         string += board[i][j].toString();
       }
