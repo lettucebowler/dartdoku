@@ -19,6 +19,10 @@ class SudokuState {
     this.board = board;
   }
 
+  SudokuState.from(SudokuState state) {
+    board = List.from(state.board);
+  }
+
   SudokuState.fromString(boardString) {
     if (boardString.length == 81) {
       for (var i = 0; i < boardString.length; i++) {

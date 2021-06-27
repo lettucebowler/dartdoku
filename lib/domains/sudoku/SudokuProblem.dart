@@ -12,21 +12,21 @@ class SudokuProblem {
   SudokuProblem() {
     var sudoku = Sudoku();
     initialState = SudokuState(sudoku.initialBoard);
-    currentState = initialState;
+    currentState = SudokuState.from(initialState);
     finalState = SudokuState(sudoku.finalBoard);
   }
 
   SudokuProblem.withMoreHints(int hints) {
     var sudoku = Sudoku();
     initialState = SudokuState(sudoku.initialBoard);
-    currentState = initialState;
+    currentState = SudokuState.from(initialState);
     finalState = SudokuState(sudoku.finalBoard);
     addClues(hints - 17);
   }
 
   SudokuProblem.fromJSON(Map<String, dynamic> json) {
     initialState = SudokuState.fromString(json['initial board']);
-    currentState = initialState;
+    currentState = SudokuState.from(initialState);
     finalState = SudokuState.fromString(json['final board']);
   }
 
@@ -39,9 +39,9 @@ class SudokuProblem {
 
   SudokuProblem.fromStates(SudokuState initialState, SudokuState currentState,
       SudokuState finalState) {
-    this.initialState = initialState;
-    this.currentState = currentState;
-    this.finalState = finalState;
+    this.initialState = SudokuState.from(initialState);
+    this.currentState = SudokuState.from(currentState);
+    this.finalState = SudokuState.from(finalState);
   }
 
   void addClues(int hintOffset) {
@@ -72,11 +72,11 @@ class SudokuProblem {
   }
 
   void reset() {
-    currentState = initialState;
+    currentState = SudokuState.from(initialState);
   }
 
   void solve() {
-    currentState = finalState;
+    currentState = SudokuState.from(finalState);
   }
 
   bool applyMove(int num, int row, int col) {
