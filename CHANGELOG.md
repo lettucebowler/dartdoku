@@ -1,3 +1,6 @@
+# 1.2.5
+cleanup debug prints
+
 # 1.2.4
 actually fixed the bug now
 
