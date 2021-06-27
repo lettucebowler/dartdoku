@@ -1,3 +1,6 @@
+# 1.2.2
+minor tweaks
+
 # 1.2.1
 renamed old problem constructor and added new one
 
