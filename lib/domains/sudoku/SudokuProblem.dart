@@ -31,11 +31,18 @@ class SudokuProblem {
     finalState = SudokuState.fromString(json['final board']);
   }
 
-  SudokuProblem.resume(List<List<int>> initialBoard,
+  SudokuProblem.fromBoards(List<List<int>> initialBoard,
       List<List<int>> currentBoard, List<List<int>> finalBoard) {
     initialState = SudokuState(initialBoard);
     currentState = SudokuState(currentBoard);
     finalState = SudokuState(finalBoard);
+  }
+
+  SudokuProblem.fromStates(SudokuState initialState, SudokuState currentState,
+      SudokuState finalState) {
+    this.initialState = initialState;
+    this.currentState = currentState;
+    this.finalState = finalState;
   }
 
   void addClues(int hintOffset) {
