@@ -1,3 +1,6 @@
+# 1.2.1
+renamed old problem constructor and added new one
+
 # 1.2.0
 remove problem framework and just implement the inherited logic into the SudokuProblem and SudokuState classes. Too simple to use a framework for that.
 
