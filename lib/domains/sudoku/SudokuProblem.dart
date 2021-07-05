@@ -78,11 +78,13 @@ class SudokuProblem {
   }
 
   void reset() {
-    currentState = SudokuState.from(initialState);
+    currentState =
+        SudokuState.fromString(SudokuProblem.boardToString(initialState));
   }
 
   void solve() {
-    currentState = SudokuState.from(finalState);
+    currentState =
+        SudokuState.fromString(SudokuProblem.boardToString(initialState));
   }
 
   bool applyMove(int num, int row, int col) {

@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:convert';
 
 /*
  * This class represents states of various tile-moving puzzle problems,
@@ -35,7 +36,7 @@ class SudokuState {
 
   SudokuState applyMove(int num, int row, int col) {
     board[row][col] = num;
-    return this;
+    return SudokuState(jsonDecode(jsonEncode(board)));
   }
 
   // Tests for equality of this puzzle state with another.
