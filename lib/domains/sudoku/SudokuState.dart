@@ -36,7 +36,7 @@ class SudokuState {
 
   SudokuState applyMove(int num, int row, int col) {
     board[row][col] = num;
-    return SudokuState(jsonDecode(jsonEncode(board)));
+    return SudokuState(List.from(board));
   }
 
   // Tests for equality of this puzzle state with another.
