@@ -20,7 +20,17 @@ class SudokuState {
   }
 
   SudokuState.from(SudokuState state) {
-    board = List.from(state.board);
+    // board = List.from(state.board);
+    var board = state.board;
+    var newBoard = getEmptyBoard(9);
+    var i = 0;
+    for (List<int> row in board) {
+      var j = 0;
+      for (int cell in row) {
+        newBoard[i][j] = cell;
+      }
+    }
+    this.board = List.from(newBoard);
   }
 
   SudokuState.fromString(boardString) {
