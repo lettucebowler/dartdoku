@@ -16,11 +16,11 @@ class SudokuState {
   // A puzzle state constructor that accepts a 2D 9x9 array of integers.
   // @param tiles a 2d array of integers
   SudokuState(List<List<int>> board) {
-    this.board = board;
+    this.board = List.from(board);
   }
 
   SudokuState.from(SudokuState state) {
-    board = state.board;
+    this.board = List.from(board);
   }
 
   SudokuState.fromString(boardString) {
