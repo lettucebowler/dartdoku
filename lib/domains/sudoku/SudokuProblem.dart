@@ -12,21 +12,24 @@ class SudokuProblem {
   SudokuProblem() {
     var sudoku = Sudoku();
     initialState = SudokuState(sudoku.initialBoard);
-    currentState = SudokuState.from(initialState);
+    currentState = SudokuState.fromString(
+        SudokuProblem.boardToString(SudokuState(sudoku.initialBoard)));
     finalState = SudokuState(sudoku.finalBoard);
   }
 
   SudokuProblem.withMoreHints(int hints) {
     var sudoku = Sudoku();
     initialState = SudokuState(sudoku.initialBoard);
-    currentState = SudokuState.from(initialState);
+    currentState =
+        SudokuState.fromString(SudokuProblem.boardToString(initialState));
     finalState = SudokuState(sudoku.finalBoard);
     addClues(hints - 17);
   }
 
   SudokuProblem.fromJSON(Map<String, dynamic> json) {
     initialState = SudokuState.fromString(json['initial board']);
-    currentState = SudokuState.from(initialState);
+    currentState =
+        SudokuState.fromString(SudokuProblem.boardToString(initialState));
     finalState = SudokuState.fromString(json['final board']);
   }
 
@@ -39,9 +42,12 @@ class SudokuProblem {
 
   SudokuProblem.fromStates(SudokuState initialState, SudokuState currentState,
       SudokuState finalState) {
-    this.initialState = SudokuState.from(initialState);
-    this.currentState = SudokuState.from(currentState);
-    this.finalState = SudokuState.from(finalState);
+    this.initialState =
+        SudokuState.fromString(SudokuProblem.boardToString(initialState));
+    this.currentState =
+        SudokuState.fromString(SudokuProblem.boardToString(initialState));
+    this.finalState =
+        SudokuState.fromString(SudokuProblem.boardToString(finalState));
   }
 
   void addClues(int hintOffset) {
