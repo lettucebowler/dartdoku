@@ -84,7 +84,7 @@ class SudokuProblem {
 
   void solve() {
     currentState =
-        SudokuState.fromString(SudokuProblem.boardToString(initialState));
+        SudokuState.fromString(SudokuProblem.boardToString(finalState));
   }
 
   bool applyMove(int num, int row, int col) {
